@@ -15,10 +15,10 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define cicTr 2
-#define noSec 3
-#define noCicTr 5
-#define valInCont 0
+#define cicTr 2 //cte. para dividir el ciclo de trabajo
+#define noSec 3 //número de secuencias
+#define noCicTr 5 //número de veces a parpadear
+#define valInCont 0 //cte. para inicializar contador
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -72,7 +72,9 @@ int main(void)
   	tick_t duration = 1000;
   	bool_t retDelRead;
   	delayInit(punt_Delay,duration);
+  	//contador para la secuencia del led
   	uint8_t contador = valInCont;
+  	//vector que define las diferencies duraciones del periodo para secuencia
   	uint32_t v_Duracion [noSec]={1000,200,100};
 /* USER CODE END 2 */
 
@@ -80,19 +82,23 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  //Casos para el Punto 3 de la practica
 	  if(contador<noCicTr*cicTr){delayWrite(punt_Delay,v_Duracion[0]/cicTr);}
 	  if(contador>=noCicTr*cicTr && contador< 2*noCicTr*cicTr){delayWrite(punt_Delay, v_Duracion[1]/cicTr);}
 	  if(contador>=2*noCicTr*cicTr && contador< 3*noCicTr*cicTr){delayWrite(punt_Delay,v_Duracion[2]/cicTr);}
 	  if(contador>=3*noCicTr*cicTr){contador=valInCont;}
 
-
+	  //Leer valor arrojado de la función delayRead y asignar a variable
 	  retDelRead = delayRead(punt_Delay);
     /* USER CODE END WHILE */
 
+	  //Si se alcanza la duracion, se niega el estado del led con Toggle
 	  if(retDelRead)
 	  {
 	  //GPIOC 13 = Led placa F401RCT6
 	  HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
+
+	  //Contador para casos del Punto 3 de la práctica
 	  contador++;
 	  }
 
