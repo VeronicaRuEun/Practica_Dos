@@ -66,12 +66,12 @@ int main(void)
   MX_GPIO_Init();
 
 /* USER CODE BEGIN 2 */
-    delay_t  delay;
-    delay_t * punt_Delay = NULL;
-    punt_Delay = &delay;
-  	tick_t duration = 1000;
-  	bool_t retDelRead;
-  	delayInit(punt_Delay,duration);
+    delay_t  delay; //crea tipo de dato delay_t llamado delay
+    delay_t * punt_Delay = NULL; //puntero tipo delay_t inicializado
+    punt_Delay = &delay; //puntero almacena la direccion de la variable delay
+  	tick_t duration = 1000; //se designa una duracion de 1000 ms
+  	bool_t retDelRead; // variable tipo bool_t para guardar el retorno de delayRead
+  	delayInit(punt_Delay,duration); //asignacion de datos para la funcion delayInit
   	//contador para la secuencia del led
   	uint8_t contador = valInCont;
   	//vector que define las diferencies duraciones del periodo para secuencia
@@ -95,7 +95,7 @@ int main(void)
 	  //Si se alcanza la duracion, se niega el estado del led con Toggle
 	  if(retDelRead)
 	  {
-	  //GPIOC 13 = Led placa F401RCT6
+	  //GPIOC 13 es la salida del Led de la placa F401RCT6
 	  HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
 
 	  //Contador para casos del Punto 3 de la práctica
@@ -114,23 +114,28 @@ int main(void)
   /* USER CODE END 3 */
 }
 
-
+//Funcion de delayInit sin retorno
 void delayInit( delay_t * delay, tick_t duration )
 {
-	delay->duration= duration;
-	delay->running = false;
+	delay->duration= duration; //asigna en delay.duracion la duracion definida en la funcion
+	delay->running = false; // asigna en delay.running "falso"
 }
 
+//Funcion de delayRead con retorno de dato tipo bool_t (bool)
 bool_t delayRead( delay_t * delay )
 {
 
-
+	//verifica el estado de delay.running
+	//si delay.running es falso, empieza conteo y cambia su estado a verdadero
 	if(delay->running == false)
 	{
 		delay->startTime = HAL_GetTick();
 		delay->running = true;
 
 	}
+	//si delay.running es verdadero, revisa si se ha alcanzado el periodo designado
+	//si se alcanzó, retorna "verdadero", y delay.running cambia a "falso";
+	//en caso contrario, retorna "falso"
 	else
 	{
 		if((HAL_GetTick()-delay->startTime) >= delay->duration)
@@ -145,8 +150,10 @@ bool_t delayRead( delay_t * delay )
 	return false;
 }
 
+//Funcion de delayWrite sin retorno
 void delayWrite( delay_t * delay, tick_t duration)
 {
+	//Asigna un valor de duracion existente a delay.duration
 	delay->duration= duration;
 }
 
